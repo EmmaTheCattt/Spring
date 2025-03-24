@@ -16,8 +16,11 @@ public class Player_script : MonoBehaviour
     public float y_speed = 1;
     public float y_speed_run = 3;
 
-    private float direction_x;
-    private float direction_y;
+    public float direction_x;
+    public float direction_y;
+    public float stop_time = 0.5f;
+
+    public float side;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +29,7 @@ public class Player_script : MonoBehaviour
         SR = GetComponent<SpriteRenderer>();
         direction_x = 0;
         direction_y = 0;
+        side = 0;
 }
 
     // Update is called once per frame
@@ -37,20 +41,6 @@ public class Player_script : MonoBehaviour
     private void FixedUpdate()
     {
         transform.position += movement * Time.deltaTime;
-
-
-        direction_x -= 0.1f * Time.deltaTime;
-        direction_y -= 0.1f * Time.deltaTime;
-
-        if (direction_x < 0)
-        {
-            direction_x = 0;
-        }
-
-        if (direction_y < 0)
-        {
-            direction_y = 0;
-        }
     }
 
 
@@ -62,6 +52,7 @@ public class Player_script : MonoBehaviour
         {
             direction_x = 1;
             SR.flipX = false;
+            side = 1;
         }
 
         //input A
@@ -69,6 +60,7 @@ public class Player_script : MonoBehaviour
         {
             direction_x = -1;
             SR.flipX = true;
+            side = -1;
         }
 
         //input W
@@ -92,5 +84,16 @@ public class Player_script : MonoBehaviour
         {
             movement = new Vector3(direction_x * side_speed, direction_y * y_speed, 0);
         }
+
+        direction_x = direction_x - stop_time * side * Time.deltaTime;
+
+        if (direction_x * -side > 0)
+        {
+            direction_x = 0;
+            side = 0;
+        }
+
+        direction_y = 0;
+
     }
 }
