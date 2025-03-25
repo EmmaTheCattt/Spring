@@ -12,6 +12,9 @@ public class Player_script : MonoBehaviour
 
     public float side_speed = 2;
     public float side_speed_run = 6;
+    public float start_up_time = 0.2f;
+
+    public float actual_side_speed;
 
     public float y_speed = 1;
     public float y_speed_run = 3;
@@ -30,6 +33,7 @@ public class Player_script : MonoBehaviour
         direction_x = 0;
         direction_y = 0;
         side = 0;
+        actual_side_speed = 0;
 }
 
     // Update is called once per frame
@@ -53,6 +57,8 @@ public class Player_script : MonoBehaviour
             direction_x = 1;
             SR.flipX = false;
             side = 1;
+
+            actual_side_speed += start_up_time * Time.deltaTime;
         }
 
         //input A
@@ -61,6 +67,8 @@ public class Player_script : MonoBehaviour
             direction_x = -1;
             SR.flipX = true;
             side = -1;
+
+            actual_side_speed += start_up_time * Time.deltaTime;
         }
 
         //input W
@@ -75,6 +83,8 @@ public class Player_script : MonoBehaviour
             direction_y = -1;
         }
 
+        Set_walkspeed();
+
         //Makes the vector.
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
@@ -82,7 +92,7 @@ public class Player_script : MonoBehaviour
         }
         else
         {
-            movement = new Vector3(direction_x * side_speed, direction_y * y_speed, 0);
+            movement = new Vector3(direction_x * actual_side_speed, direction_y * y_speed, 0);
         }
 
         direction_x = direction_x - stop_time * side * Time.deltaTime;
@@ -95,5 +105,18 @@ public class Player_script : MonoBehaviour
 
         direction_y = 0;
 
+    }
+
+    private void Set_walkspeed()
+    {
+        if (actual_side_speed >= side_speed)
+        {
+            actual_side_speed = side_speed;
+        }
+
+        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && direction_x == 0)
+        {
+            actual_side_speed = 0;
+        }
     }
 }
